@@ -26,6 +26,11 @@ if docker ps -a --format '{{.Names}}' | grep -q '^titan$'; then
     docker rm titan
 fi
 
+sudo sysctl -w net.core.rmem_max=26214400
+sudo sysctl -w net.core.rmem_default=26214400
+sudo sysctl -p
+
+
 mkdir -p ~/.titanedge
 
 # Launch Titan
