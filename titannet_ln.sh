@@ -30,6 +30,7 @@ sudo sysctl -w net.core.rmem_max=26214400
 sudo sysctl -w net.core.rmem_default=26214400
 sudo sysctl -p
 
+sleep 5
 
 mkdir -p ~/.titanedge
 
@@ -39,3 +40,20 @@ docker run --name titan --network=host -d -v ~/.titanedge:/root/.titanedge nezha
 # Bind identity code
 identity_code=$(cat identity_code.txt)
 docker run --rm -it -v ~/.titanedge:/root/.titanedge nezha123/titan-edge bind --hash="$identity_code" https://api-test1.container1.titannet.io/api/v2/device/binding
+
+
+sleep 30
+
+# Stop and remove any existing Titan container if present
+if docker ps -a --format '{{.Names}}' | grep -q '^titan$'; then
+    docker stop titan
+    docker rm titan
+fi
+
+# Launch Titan
+docker run --name titan --network=host -d -v ~/.titanedge:/root/.titanedge nezha123/titan-edge
+
+# Bind identity code
+identity_code=$(cat identity_code.txt)
+docker run --rm -it -v ~/.titanedge:/root/.titanedge nezha123/titan-edge bind --hash="$identity_code" https://api-test1.container1.titannet.io/api/v2/device/binding
+
